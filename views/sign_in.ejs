@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign In</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            background: linear-gradient(135deg, #fd5068, #ff7854);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .signin-container {
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .signin-card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 32px 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 6px;
+            color: #222;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 24px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #fd5068;
+            box-shadow: 0 0 0 3px rgba(253, 80, 104, 0.15);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #fd5068, #ff7854);
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+
+        button:hover {
+            box-shadow: 0 10px 20px rgba(253, 80, 104, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .footer-text {
+            margin-top: 16px;
+            font-size: 13px;
+            color: #888;
+        }
+
+        .footer-text a {
+            color: #fd5068;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .error {
+            background: rgba(255, 80, 80, 0.1);
+            color: #e63946;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 14px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="signin-container">
+    <form class="signin-card" method="post" action="/sign_in">
+        <h1>Welcome back</h1>
+        <p class="subtitle">Sign in to continue</p>
+        <% if (typeof error !== "undefined") { %>
+        <div class="error"><%= error %></div>
+        <% } %>
+
+        <input
+                type="email"
+                name="email"
+                placeholder="Email Address"
+                required
+        />
+
+        <input
+                type="password"
+                name="pin"
+                placeholder="Access PIN"
+                required
+        />
+
+        <button type="submit">Sign In</button>
+        <p class="footer-text">
+            Forgot pin?
+            <a href="/Recover_pin">Recover Pin</a>
+        </p>
+        <p class="footer-text">
+            New here?
+            <a href="/">Create an account</a>
+        </p>
+    </form>
+</div>
+
+</body>
+</html>

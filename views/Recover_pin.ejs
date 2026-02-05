@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Recover PIN</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", system-ui, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            background: linear-gradient(135deg, #fd5068, #ff7854);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: #fff;
+            width: 100%;
+            max-width: 380px;
+            padding: 32px 28px;
+            border-radius: 18px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #222;
+        }
+
+        p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            margin-bottom: 14px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #fd5068;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border-radius: 999px;
+            border: none;
+            background: linear-gradient(135deg, #fd5068, #ff7854);
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .status {
+            margin-top: 14px;
+            font-size: 13px;
+        }
+
+        .error {
+            color: #e63946;
+        }
+
+        .success {
+            color: #2a9d8f;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 16px;
+            font-size: 13px;
+            color: #fd5068;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>Recover PIN</h1>
+    <p>Enter your registered email</p>
+
+    <form method="POST" action="/recover-pin">
+        <input
+                type="email"
+                name="email"
+                placeholder="Email address"
+                required
+        />
+        <button type="submit">Send PIN</button>
+    </form>
+
+    <% if (error) { %>
+    <div class="status error"><%= error %></div>
+    <% } %>
+
+    <% if (success) { %>
+    <div class="status success"><%= success %></div>
+    <% } %>
+
+    <a href="/sign_in">← Back to Sign In</a>
+</div>
+
+</body>
+</html>

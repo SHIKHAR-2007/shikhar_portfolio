@@ -85,3 +85,19 @@ body {
     color: #fd5068;
     cursor: pointer;
 }
+.footer-text {
+    margin-top: 16px;
+    font-size: 13px;
+    color: #888;
+    text-align: center;
+}
+
+.footer-text a {
+    color: #fd5068;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.footer-text a:hover {
+    text-decoration: underline;
+}

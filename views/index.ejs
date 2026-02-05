@@ -20,15 +20,18 @@
 
         <input type="tel" name="phone" placeholder="Phone Number" required />
 
-        <input type="password" name="pin" placeholder="Create Access PIN" required />
+        <input type="password" name="pin" placeholder="Create Access PIN" maxlength="6" required />
 
         <button type="submit">Continue</button>
-
+        <p class="footer-text">
+            Already have an account?
+            <a href="/sign_in">Sign in</a>
+        </p>
         <p class="terms">
-            By continuing, you agree to our <span>Terms</span> & <span>Privacy Policy</span>.
+            By continuing, you agree to our <span class="clickable">Terms & Privacy Policy</span>.
         </p>
     </form>
 </div>
-
+<script src="/index_script.js"></script>
 </body>
 </html>
