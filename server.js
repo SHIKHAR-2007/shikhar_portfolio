@@ -5,6 +5,7 @@ import express from "express";
 import mongoose from "mongoose";
 import emailjs from "@emailjs/nodejs";
 import User from "./models/User.js";
+import session from "express-session";
 
 const app = express();
 
@@ -12,6 +13,22 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            maxAge: 1000 * 60 * 60 * 24 // 1 day
+        }
+    })
+);
+const requireAuth = (req, res, next) => {
+    if (!req.session.userId) {
+        return res.redirect("/sign_in");
+    }
+    next();
+};
 
 app.set("view engine", "ejs");
 
@@ -66,13 +83,38 @@ app.post("/sign_in", async (req, res) => {
             });
         }
 
-        res.send("Login successful"); // later → dashboard
+        // res.send("Login successful"); // later → dashboard
+        // ✅ Save user ID in session
+        req.session.userId = user._id;
+
+        res.redirect("/dashboard");
     } catch (err) {
         console.error("LOGIN ERROR:", err);
         res.render("sign_in", {
             error: "Something went wrong"
         });
     }
+});
+/* ---------- Dashboard ---------- */
+app.get("/dashboard", requireAuth, async (req, res) => {
+    const user = await User.findById(req.session.userId).lean();
+
+    if (!user) {
+        req.session.destroy();
+        return res.redirect("/sign_in");
+    }
+
+    delete user.pin;
+
+    res.render("dashboard", {
+        user
+    });
+});
+/* ---------- LOG OUT ---------- */
+app.get("/logout", (req, res) => {
+    req.session.destroy(() => {
+        res.redirect("/sign_in");
+    });
 });
 
 /* ---------- RECOVER PIN ---------- */
