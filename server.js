@@ -168,17 +168,18 @@ app.get("/recover_pin", requireGuest, (req, res) => {
 });
 
 app.post("/recover-pin", requireGuest, async (req, res) => {
-    const { email } = req.body;
-    const user = await User.findOne({ email });
-
-    if (!user) {
-        return res.render("recover_pin", {
-            error: "No account found",
-            success: null
-        });
-    }
-
     try {
+        const { email } = req.body;
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.render("recover_pin", {
+                error: "No account found",
+                success: null
+            });
+        }
+
+        // ✅ Fixed: only publicKey, no privateKey
         await emailjs.send(
             process.env.EMAILJS_SERVICE_ID,
             process.env.EMAILJS_TEMPLATE_ID,
@@ -187,10 +188,7 @@ app.post("/recover-pin", requireGuest, async (req, res) => {
                 pin: String(user.pin),
                 name: "UniVerse Team"
             },
-            {
-                publicKey: process.env.EMAILJS_PUBLIC_KEY,
-                privateKey: process.env.EMAILJS_PRIVATE_KEY
-            }
+            { publicKey: process.env.EMAILJS_PUBLIC_KEY }
         );
 
         res.render("recover_pin", {
@@ -198,10 +196,10 @@ app.post("/recover-pin", requireGuest, async (req, res) => {
             error: null
         });
     } catch (err) {
-        console.error("EmailJS Error:", err);
+        console.error("Recover PIN Error:", err);
         res.render("recover_pin", {
             success: null,
-            error: "Failed to send PIN. Please try again later."
+            error: "Failed to send PIN. Please check EmailJS setup."
         });
     }
 });
