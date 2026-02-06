@@ -164,7 +164,7 @@ app.post("/logout", requireAuth, (req, res) => {
 
 /* ---------- RECOVER PIN ---------- */
 app.get("/recover_pin", requireGuest, (req, res) => {
-    res.render("recover_pin", { error: null, success: null });
+    res.render("Recover_pin", { error: null, success: null });
 });
 
 app.post("/recover-pin", requireGuest, async (req, res) => {
@@ -178,7 +178,7 @@ app.post("/recover-pin", requireGuest, async (req, res) => {
 
         if (!user) {
             console.log("[Recover PIN] No user found with this email");
-            return res.render("recover_pin", {
+            return res.render("Recover_pin", {
                 error: "No account found",
                 success: null
             });
@@ -203,14 +203,14 @@ app.post("/recover-pin", requireGuest, async (req, res) => {
 
         console.log("[Recover PIN] Email sent successfully to:", email);
 
-        res.render("recover_pin", {
+        res.render("Recover_pin", {
             success: "PIN sent to your email",
             error: null
         });
     } catch (err) {
         console.error("[Recover PIN] Error:", err);
 
-        res.render("recover_pin", {
+        res.render("Recover_pin", {
             success: null,
             error: "Failed to send PIN. Check logs on Render for details."
         });
