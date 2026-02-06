@@ -217,7 +217,7 @@ app.post("/recover-pin", requireGuest, async (req, res) => {
     }
 });
 
-app.get("/terms_and_conditions", requireAuth, (req, res) => {
+app.get("/terms_and_conditions", (req, res) => {
     res.render("terms_and_conditions")
 })
 /* ===================== SERVER ===================== */
