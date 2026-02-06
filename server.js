@@ -203,7 +203,9 @@ app.post("/recover-pin", requireGuest, async (req, res) => {
         });
     }
 });
-
+app.get("/terms_and_conditions", requireAuth, (req, res) => {
+    res.render("terms_and_conditions")
+})
 /* ===================== SERVER ===================== */
 app.listen(3000, () => {
     console.log("🚀 Server running on http://localhost:3000");

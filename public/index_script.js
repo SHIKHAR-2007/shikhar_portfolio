@@ -2,6 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const clickable_btn = document.querySelector(".clickable");
 
     clickable_btn.addEventListener("click", () => {
-        window.location.href = "/terms";
+        window.location.href = "/terms_and_conditions";
     });
 });
