@@ -170,26 +170,32 @@ app.get("/recover_pin", requireGuest, (req, res) => {
 app.post("/recover-pin", requireGuest, async (req, res) => {
     try {
         const { email } = req.body;
-
-        // Log the incoming email
         console.log("[Recover PIN] Requested for email:", email);
 
-        const user = await User.findOne({ email });
-
-        if (!user) {
-            console.log("[Recover PIN] No user found with this email");
-            return res.render("Recover_pin", {
-                error: "No account found",
-                success: null
+        // Check that all required environment variables exist
+        const missingVars = [];
+        ["EMAILJS_SERVICE_ID", "EMAILJS_TEMPLATE_ID", "EMAILJS_PUBLIC_KEY", "EMAILJS_PRIVATE_KEY"].forEach(key => {
+            if (!process.env[key]) missingVars.push(key);
+        });
+        if (missingVars.length) {
+            console.error("[Recover PIN] Missing env variables:", missingVars);
+            return res.render("Recover_pin", { // case-sensitive match to your file
+                success: null,
+                error: `Server misconfigured. Missing: ${missingVars.join(", ")}`
             });
         }
 
-        // Log environment variables to check if they exist
-        console.log("[Recover PIN] EMAILJS_SERVICE_ID:", process.env.EMAILJS_SERVICE_ID ? "OK" : "MISSING");
-        console.log("[Recover PIN] EMAILJS_TEMPLATE_ID:", process.env.EMAILJS_TEMPLATE_ID ? "OK" : "MISSING");
-        console.log("[Recover PIN] EMAILJS_PUBLIC_KEY:", process.env.EMAILJS_PUBLIC_KEY ? "OK" : "MISSING");
+        // Find user by email
+        const user = await User.findOne({ email });
+        if (!user) {
+            console.log("[Recover PIN] No user found for email:", email);
+            return res.render("Recover_pin", {
+                success: null,
+                error: "No account found"
+            });
+        }
 
-        // Attempt to send email
+        // Send email with BOTH keys (strict mode)
         await emailjs.send(
             process.env.EMAILJS_SERVICE_ID,
             process.env.EMAILJS_TEMPLATE_ID,
@@ -198,7 +204,10 @@ app.post("/recover-pin", requireGuest, async (req, res) => {
                 pin: String(user.pin),
                 name: "UniVerse Team"
             },
-            { publicKey: process.env.EMAILJS_PUBLIC_KEY } // only publicKey is needed
+            {
+                publicKey: process.env.EMAILJS_PUBLIC_KEY,
+                privateKey: process.env.EMAILJS_PRIVATE_KEY
+            }
         );
 
         console.log("[Recover PIN] Email sent successfully to:", email);
@@ -207,15 +216,16 @@ app.post("/recover-pin", requireGuest, async (req, res) => {
             success: "PIN sent to your email",
             error: null
         });
+
     } catch (err) {
         console.error("[Recover PIN] Error:", err);
-
         res.render("Recover_pin", {
             success: null,
-            error: "Failed to send PIN. Check logs on Render for details."
+            error: "Failed to send PIN. Check Render logs for details."
         });
     }
 });
+
 
 app.get("/terms_and_conditions", (req, res) => {
     res.render("terms_and_conditions")
