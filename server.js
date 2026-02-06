@@ -22,8 +22,8 @@ app.use(
         resave: false,
         saveUninitialized: false,
         cookie: {
-            httpOnly: true
-            // no maxAge → session cookie
+            httpOnly: true,
+            maxAge: 10 * 1000 // 10 seconds
         }
     })
 );
