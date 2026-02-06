@@ -170,16 +170,26 @@ app.get("/recover_pin", requireGuest, (req, res) => {
 app.post("/recover-pin", requireGuest, async (req, res) => {
     try {
         const { email } = req.body;
+
+        // Log the incoming email
+        console.log("[Recover PIN] Requested for email:", email);
+
         const user = await User.findOne({ email });
 
         if (!user) {
+            console.log("[Recover PIN] No user found with this email");
             return res.render("recover_pin", {
                 error: "No account found",
                 success: null
             });
         }
 
-        // ✅ Fixed: only publicKey, no privateKey
+        // Log environment variables to check if they exist
+        console.log("[Recover PIN] EMAILJS_SERVICE_ID:", process.env.EMAILJS_SERVICE_ID ? "OK" : "MISSING");
+        console.log("[Recover PIN] EMAILJS_TEMPLATE_ID:", process.env.EMAILJS_TEMPLATE_ID ? "OK" : "MISSING");
+        console.log("[Recover PIN] EMAILJS_PUBLIC_KEY:", process.env.EMAILJS_PUBLIC_KEY ? "OK" : "MISSING");
+
+        // Attempt to send email
         await emailjs.send(
             process.env.EMAILJS_SERVICE_ID,
             process.env.EMAILJS_TEMPLATE_ID,
@@ -188,21 +198,25 @@ app.post("/recover-pin", requireGuest, async (req, res) => {
                 pin: String(user.pin),
                 name: "UniVerse Team"
             },
-            { publicKey: process.env.EMAILJS_PUBLIC_KEY }
+            { publicKey: process.env.EMAILJS_PUBLIC_KEY } // only publicKey is needed
         );
+
+        console.log("[Recover PIN] Email sent successfully to:", email);
 
         res.render("recover_pin", {
             success: "PIN sent to your email",
             error: null
         });
     } catch (err) {
-        console.error("Recover PIN Error:", err);
+        console.error("[Recover PIN] Error:", err);
+
         res.render("recover_pin", {
             success: null,
-            error: "Failed to send PIN. Please check EmailJS setup."
+            error: "Failed to send PIN. Check logs on Render for details."
         });
     }
 });
+
 app.get("/terms_and_conditions", requireAuth, (req, res) => {
     res.render("terms_and_conditions")
 })
