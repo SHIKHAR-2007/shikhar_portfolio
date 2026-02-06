@@ -178,24 +178,32 @@ app.post("/recover-pin", requireGuest, async (req, res) => {
         });
     }
 
-    await emailjs.send(
-        process.env.EMAILJS_SERVICE_ID,
-        process.env.EMAILJS_TEMPLATE_ID,
-        {
-            email: user.email,
-            pin: String(user.pin),
-            name: "UniVerse Team"
-        },
-        {
-            publicKey: process.env.EMAILJS_PUBLIC_KEY,
-            privateKey: process.env.EMAILJS_PRIVATE_KEY
-        }
-    );
+    try {
+        await emailjs.send(
+            process.env.EMAILJS_SERVICE_ID,
+            process.env.EMAILJS_TEMPLATE_ID,
+            {
+                email: user.email,
+                pin: String(user.pin),
+                name: "UniVerse Team"
+            },
+            {
+                publicKey: process.env.EMAILJS_PUBLIC_KEY,
+                privateKey: process.env.EMAILJS_PRIVATE_KEY
+            }
+        );
 
-    res.render("recover_pin", {
-        success: "PIN sent to your email",
-        error: null
-    });
+        res.render("recover_pin", {
+            success: "PIN sent to your email",
+            error: null
+        });
+    } catch (err) {
+        console.error("EmailJS Error:", err);
+        res.render("recover_pin", {
+            success: null,
+            error: "Failed to send PIN. Please try again later."
+        });
+    }
 });
 
 /* ===================== SERVER ===================== */
